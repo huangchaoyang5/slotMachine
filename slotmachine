@@ -1,0 +1,484 @@
+<!-- 聖誕活動 2018/12/06 -->
+<div id="AcitivtyForChrismas" style="position: fixed; top: 90px; right: 0%; z-index: 5; padding: 0px; margin: 0px;">
+    <div class="slotmachine">
+        <img src="/images/Christmas/slotMachine.png" title="" style="width: 220px; height: 280px;" onload="BuildSlotmachine(this)" />
+        <div id="slot1" class="slots" style="left: 35px;">
+            <div class="wrapper"></div>
+        </div>
+        <div id="slot2" class="slots" style="left: 79px;">
+            <div class="wrapper"></div>
+        </div>
+        <div id="slot3" class="slots" style="left: 122px;">
+            <div class="wrapper"></div>
+        </div>
+        <div id="slotMachineButton" class="slotButton"></div>
+        <div id="slotResult" class="slotMessage"></div>
+    </div>
+
+    <style>
+        .slotButton {
+            cursor: pointer;
+            position: absolute;
+            top: 121px;
+            left: 86px;
+        }
+
+        @keyframes myfirst {
+            0% {
+                color: white;
+            }
+
+            50% {
+                color: #ffcd3c;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        @-moz-keyframes myfirst {
+            0% {
+                color: white;
+            }
+
+            50% {
+                color: #ffcd3c;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        @-webkit-keyframes myfirst {
+            0% {
+                color: white;
+            }
+
+            50% {
+                color: #ffcd3c;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        .slotMessage {
+            font-size: 13px;
+            line-height: 18px;
+            text-align: center;
+            padding: 1px;
+            width: 161px;
+            word-break: break-all;
+            position: absolute;
+            top: 198px;
+            left: 22px;
+            color: #ffcd3c;
+            animation: myfirst 2s;
+            -moz-animation: myfirst 2s infinite; /* Firefox */
+            -webkit-animation: myfirst 2s infinite; /* Safari and Chrome */
+        }
+
+        .slots {
+            font-size: 50px;
+            font-family: arial,helvetica,sans-serif;
+            overflow: hidden;
+            width: 50px;
+            height: 90px;
+            position: absolute;
+            top: 44px;
+            z-index: -5;
+        }
+
+            .slots .wrapper {
+                padding-top: 8px;
+                margin-top: -25px;
+                width: 50px;
+            }
+
+            .slots .slot {
+                width: 50px;
+                height: 50px;
+                text-align: center;
+                background-color: white;
+            }
+    </style>
+
+    <script type="text/javascript">
+
+        var slotMachine = [];
+
+        function BuildSlotmachine(obj) {
+
+            var opts1 = ['0', '1'];
+            var opts2 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+            slotMachine.push(new Slots($("#slot1 .wrapper"), opts1));
+            slotMachine.push(new Slots($("#slot2 .wrapper"), opts2));
+            slotMachine.push(new Slots($("#slot3 .wrapper"), opts2));
+
+            var buttonImg = document.createElement('img');
+            buttonImg.src = '/images/Christmas/slotButton.png';
+            buttonImg.title = 'GO!';
+            buttonImg.style.width = '37px';
+            buttonImg.style.height = '26px';
+
+            document.getElementById('slotMachineButton').appendChild(buttonImg);
+            document.getElementById('slotMachineButton').onclick = function () {
+                slotButtonClick(this);
+            }
+
+        }
+
+        function Slots(jqo, opts) {
+
+            //init first 3 slots
+            var isCompleted = false;
+            var finalValue = -1;
+            var startIndex = 1;
+            AddSlotAtFirst();
+            AddSlotAtFirst();
+            AddSlotAtFirst();
+
+            function slotAction(speed, easing, easingData, direction) {
+
+                if (direction == 'Up') {
+
+                    jqo.animate(
+                           { "margin-top": "-35px" },
+                           {
+                               duration: speed, done: function (now, fx) {
+                                   jqo.css("margin-top", "-25px");
+                               }, start: function () {
+                                   AddSlotForRevoke();
+                                   RemoveFirstSlot();
+                               }, easing: easingData
+                           });
+
+                } else {
+
+                    jqo.animate(
+                          { "margin-top": "10px" },
+                          {
+                              duration: speed, done: function (now, fx) {
+                                  AddSlotAtFirst();
+                                  jqo.css("margin-top", "-25px");
+                                  RemoveLastSlot();
+                              }, start: function () {
+                              }, easing: easingData
+                          });
+
+                }
+
+            };
+
+            function AddSlotAtFirst() {
+                jqo.prepend("<div class='slot'>" + opts[startIndex] + "</div>");
+                startIndex -= 1;
+                if (startIndex < 0) {
+                    startIndex = (opts.length - 1);
+                }
+            }
+
+            function AddSlotForRevoke() {
+
+                startIndex += 1;
+                if (startIndex >= opts.length) {
+                    startIndex = 0;
+                }
+
+                var revokeIndex = startIndex;
+                for (var i = 0; i < 3; i++) {
+                    revokeIndex += 1;
+                    if (revokeIndex >= opts.length) {
+                        revokeIndex = 0;
+                    }
+                }
+
+                jqo.append("<div class='slot'>" + opts[revokeIndex] + "</div>");
+
+            }
+
+            function RemoveFirstSlot() {
+                jqo.find(':first-child').remove();
+            }
+
+            function RemoveLastSlot() {
+                jqo.find(':last-child').remove();
+            }
+
+            var gotoFinalStep = false;
+            var reverseOrder = false;
+            var orignalLoopCount = 0;
+            var slotInterval = null;
+            this.startAction = function slotActionStep(duration, stepTime, loopCount) {  //duration must greater than stepTime
+
+                var intervalCount = 1; //init value   
+                var sumSpeed = 0; //init value   
+                var speed = duration;
+                isCompleted = false;
+
+                //assign the first loopCount
+                if (typeof loopCount === 'undefined') {
+                    loopCount = parseInt(duration / stepTime, 10);
+                    orignalLoopCount = loopCount;
+                }
+
+                if (!reverseOrder && loopCount == 0) {
+                    reverseOrder = true;
+                } else if (reverseOrder && loopCount == orignalLoopCount) {
+                    gotoFinalStep = true;
+                }
+
+                var currentDuration = duration - (Math.round(Math.random() * (stepTime / 2)));
+                slotInterval = setInterval(function () {
+
+                    if (isCompleted) {
+                        clearInterval(slotInterval);
+                        var num1 = parseInt(finalValue, 10);
+                        var num2 = parseInt(jqo.find(':nth-child(2)').html(), 10);
+                        if (num1 != num2) {
+                            //console.log('last -- num1 => ' + finalValue + " | num2 => " + jqo.find(':nth-child(2)').html() + " startIndex " + startIndex);
+                            slotAction(duration, 'easing', 'easeOutElastic', 'Up');
+                        }
+                        return;
+                    }
+
+                    //final action
+                    if (gotoFinalStep) {
+
+                        var num1 = parseInt(finalValue, 10);
+                        var num2 = parseInt(jqo.find(':nth-child(2)').html(), 10);
+
+                        //determine by this.finalValue
+                        if (num1 == num2) {
+                            isCompleted = true;
+                            gotoFinalStep = false;
+                            reverseOrder = false;
+                        } else {
+                            slotAction(currentDuration, 'linear', '');
+                        }
+
+                    } else {
+
+                        slotAction(currentDuration, 'linear', '');
+
+                        var extraTime = 1;
+                        if (loopCount < 2) {
+                            extraTime = 6;
+                        } else {
+                            extraTime = 1;
+                        }
+
+                        //determine by total time
+                        sumSpeed += speed;
+                        if (sumSpeed >= (speed * intervalCount * extraTime)) {
+                            clearInterval(slotInterval);
+
+                            if (reverseOrder)
+                                slotActionStep((duration + stepTime), stepTime, (loopCount + 1));
+                            else
+                                slotActionStep((duration - stepTime), stepTime, (loopCount - 1));
+                        }
+                    }
+
+                }, speed);
+
+            };
+
+            this.stopAction = function () {
+                clearInterval(slotInterval);
+            };
+
+            this.assignFinalValue = function (myVal) {
+                finalValue = myVal;
+            }
+
+            this.isDone = function () {
+                return isCompleted;
+            }
+
+            //only occur when the value is not match
+            this.adjustFinalHtml = function (duration) {
+                var jqoSecondCurrentValue = parseInt(jqo.find(':nth-child(2)').html());
+                if (finalValue != jqoSecondCurrentValue) {
+                    //slotAction(duration, 'easing', 'easeOutElastic', 'Up');
+                }
+            }
+        }
+
+        function slotButtonClick(obj) {
+
+            var buttonHeight = $(obj).find('img').css("height");
+            if (buttonHeight == '21px')
+                return;
+
+            var slotDuration = 200;
+            var slotDurationStep = 100;
+            var slotTimeOut = 0; //contorl the delay time for stop action
+
+            $.ajax({
+                url: "/API/CouponFactory.aspx?prefix=xmas",
+                type: 'GET',
+                async: false,
+                cache: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                beforeSend: function () {
+
+                    slotButtonImg(obj, true);
+                    document.getElementById('slotResult').innerHTML = '';
+
+                    slotMachine.forEach(function (ele) {
+                        setTimeout(function () {
+                            ele.startAction(slotDuration, slotDurationStep);
+                        }, slotTimeOut);
+                        slotTimeOut += slotDuration;
+                    });
+
+                },
+                complete: function () {
+                },
+                success: function (data) {
+                    if (data.isScussess) {
+
+                        slotMachine[0].assignFinalValue(data.firstNum);
+                        slotMachine[1].assignFinalValue(data.secondNum);
+                        slotMachine[2].assignFinalValue(data.thirdNum);
+
+                        setTimeout(function () {
+
+                            var slotDoneInterval = setInterval(function () {
+
+                                var isDoneCount = 0;
+                                for (var i = 0; i < slotMachine.length; i++) {
+                                    var isDone = slotMachine[i].isDone();
+                                    if (isDone) {
+                                        isDoneCount += 1;
+                                        switch (i) {
+                                            case 0:
+                                                setTimeout(slotMachine[0].adjustFinalHtml(slotDuration), slotDuration);
+                                                break;
+                                            case 1:
+                                                setTimeout(slotMachine[1].adjustFinalHtml(slotDuration), slotDuration);
+                                                break;
+                                            case 2:
+                                                setTimeout(slotMachine[2].adjustFinalHtml(slotDuration), slotDuration);
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                ///if all slot are finishing action display final message
+                                if (isDoneCount == slotMachine.length) {
+                                    clearInterval(slotDoneInterval);
+
+                                    document.getElementById('slotResult').innerHTML = data.message;
+                                    if (data.couponeCode != '') {
+                                        var btn = document.createElement('div');
+                                        btn.innerHTML = '複製';
+                                        btn.style.padding = '2px';
+                                        btn.style.cursor = 'pointer';
+                                        btn.style.backgroundColor = '#d2cfcb';
+                                        btn.style.display = 'inline-block';
+                                        btn.style.borderRadius = '4px';
+                                        btn.style.color = 'black';
+                                        btn.style.fontSize = '10px';
+                                        btn.style.lineHeight = '13px';
+                                        btn.onclick = function () {
+
+                                            var code = document.createElement('input');
+                                            code.type = 'text';
+                                            code.value = data.couponeCode;
+                                            document.getElementById('slotResult').appendChild(code);
+
+                                            code.select();
+                                            document.execCommand("copy");
+
+                                            document.getElementById('slotResult').removeChild(code);
+
+                                        }
+
+                                        document.getElementById('slotResult').appendChild(document.createElement('br'));
+                                        document.getElementById('slotResult').appendChild(btn);
+                                    }
+                                    slotButtonImg(obj, false);
+
+                                }
+
+                            }, slotDuration);
+
+                        }, (slotTimeOut * 2));
+
+                    } else {
+
+                        slotMachine.forEach(function (ele) {
+                            setTimeout(function () { ele.stopAction(); }, slotTimeOut);
+                        });
+
+                        setTimeout(function () {
+                            document.getElementById('slotResult').innerHTML = data.message;
+                            if (data.couponeCode != '') {
+                                var btn = document.createElement('div');
+                                btn.innerHTML = '複製';
+                                btn.style.padding = '2px';
+                                btn.style.cursor = 'pointer';
+                                btn.style.backgroundColor = '#d2cfcb';
+                                btn.style.display = 'inline-block';
+                                btn.style.borderRadius = '4px';
+                                btn.style.color = 'black';
+                                btn.style.fontSize = '10px';
+                                btn.style.lineHeight = '13px';
+                                btn.onclick = function () {
+
+                                    var code = document.createElement('input');
+                                    code.type = 'text';
+                                    code.value = data.couponeCode;
+                                    document.getElementById('slotResult').appendChild(code);
+
+                                    code.select();
+                                    document.execCommand("copy");
+
+                                    document.getElementById('slotResult').removeChild(code);
+
+                                }
+
+                                document.getElementById('slotResult').appendChild(document.createElement('br'));
+                                document.getElementById('slotResult').appendChild(btn);
+                            }
+                            slotButtonImg(obj, false);
+                        }, slotTimeOut);
+
+                        if (data.returnUrl == '') {
+                        } else {
+                            window.location.href = data.returnUrl;
+                        }
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.responseText);
+                    selfPopup('系統錯誤!!');
+                    closeBlockUI(1000);
+                }
+            });
+
+        }
+
+        function slotButtonImg(obj, isDown) {
+            if (isDown) {
+                $(obj).css("top", '125px');
+                $(obj).css("left", '87px');
+                $(obj).find('img').css("height", '21px');
+                $(obj).find('img').css("width", '35px');
+            } else {
+                $(obj).css("top", '121px');
+                $(obj).css("left", '86px');
+                $(obj).find('img').css("height", '26px');
+                $(obj).find('img').css("width", '37px');
+            }
+        }
+
+    </script>
+</div>
