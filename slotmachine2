@@ -1,0 +1,500 @@
+/* Reference for js and css
+ * jQuery Slot Machine v4.0.0
+ * https://github.com/josex2r/jQuery-SlotMachineundefined
+ *
+ * Copyright 2014 Jose Luis Represa
+ * Released under the MIT license
+ */
+
+<%@ Page Language="vb" AutoEventWireup="false" CodeFile="slotmachine.aspx.vb" Inherits="slotmachine" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, minimum-scale=0.6, maximum-scale=0.8 " />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>e7Line::大家來"搶"購</title>
+    <meta name="description" content="雲城股份有限公司::e7Line" />
+    <meta name="keywords" content="雲城股份有限公司,團購,企業採買,購物" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/Activity/css/slotmachine.css" media="screen" />
+    <style type="text/css">
+        h1 {
+            margin-left: -55px;
+            top: 145px;
+            display: inline-block;
+            color: white;
+            font-family: 'Righteous', serif;
+            text-shadow: 5px 5px 20px hsla(30,80%,95%,1);
+            font-weight: bold;
+            position: relative;
+        }
+
+        .handle {
+            position: absolute;
+            top: 0px;
+            margin-left: 188px;
+            margin-top: 165px;
+            /*animation: rotation 2s infinite linear;*/
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+
+            50% {
+                transform: rotateX(-50deg);
+            }
+
+            100% {
+                transform: rotateX(-150deg);
+            }
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="/Activity/script/slotmachine.js"></script>
+</head>
+<body onload="bodyLoadFunction();">
+
+    <!-- Slot machine example -->
+    <div id="casino">
+        <div class="content">
+            <h1>JACKPOT</h1>
+            <div>
+                <div id="casino0" class="slotMachine">
+                    <div class="slot slot1"></div>
+                    <div class="slot slot2"></div>
+                    <div class="slot slot3"></div>
+                    <div class="slot slot4"></div>
+                    <div class="slot slot5"></div>
+                    <div class="slot slot6"></div>
+                    <div class="slot slot7"></div>
+                    <div class="slot slot8"></div>
+                    <div class="slot slot9"></div>
+                </div>
+                <div id="casino1" class="slotMachine">
+                    <div class="slot slot1"></div>
+                    <div class="slot slot2"></div>
+                    <div class="slot slot3"></div>
+                    <div class="slot slot4"></div>
+                    <div class="slot slot5"></div>
+                    <div class="slot slot6"></div>
+                    <div class="slot slot7"></div>
+                    <div class="slot slot8"></div>
+                    <div class="slot slot9"></div>
+                </div>
+                <div id="casino2" class="slotMachine">
+                    <div class="slot slot1"></div>
+                    <div class="slot slot2"></div>
+                    <div class="slot slot3"></div>
+                    <div class="slot slot4"></div>
+                    <div class="slot slot5"></div>
+                    <div class="slot slot6"></div>
+                    <div class="slot slot7"></div>
+                    <div class="slot slot8"></div>
+                    <div class="slot slot9"></div>
+                </div>
+                <div id="casino3" class="slotMachine">
+                    <div class="slot slot1"></div>
+                    <div class="slot slot2"></div>
+                    <div class="slot slot3"></div>
+                    <div class="slot slot4"></div>
+                    <div class="slot slot5"></div>
+                    <div class="slot slot6"></div>
+                    <div class="slot slot7"></div>
+                    <div class="slot slot8"></div>
+                    <div class="slot slot9"></div>
+                </div>
+
+                <div class="btn-group btn-group-justified" role="group" style="display: none;">
+                    <button id="casinoShuffle" type="button" class="btn btn-primary btn-lg">SPIN</button>
+                    <button id="casinoStop" type="button" class="btn btn-primary btn-lg">STOP</button>
+                </div>
+                <div>
+                    <div id="slotmachineMessage" style="margin-top: 160px; display: none;"></div>
+                </div>
+            </div>
+            <img class="handle" src="img/slotmachine/handle1.png" />
+            <div id="countDownDiv" style="padding: 0px; display: none;">倒數<span></span></div>
+            <div style="position: absolute; left: 0px; right: 0px; top: -115px;">
+                <button onclick="BackToHome()"><i class="far fa-hand-point-left"></i>&nbsp;回購物頁</button></div>
+        </div>
+
+    </div>
+
+    <div id="ruleBoardBox" class="ruleBoardBox">
+        <div>
+            <div style="width: 100%; height: 30px; background-color: #d82625; text-align: center; padding-top: 15px; padding-bottom: 5px; color: white; font-size: 24px; font-weight: 600; border-top-left-radius: 5px; border-top-right-radius: 5px;">遊戲規則</div>
+            <div id="anouencementInnerDiv" style="letter-spacing: 2px; padding: 10px;word-break:break-all;">
+                <ul>
+                    <li>若遇下載慢時，請等等阿爆喔!~</li>
+                    <li>遊戲期間：2020/11/09 00:00至2020/11/11 23:59止</li>
+                    <li>遊戲機會：每組帳號享有一次免費遊戲機會</li>
+                    <li>遊戲開始：請點擊黃色搖桿後，即可開始遊戲</li>
+                    <li>遊戲停止：轉動後，請再次點擊黃色搖桿即可停止</li>
+                    <li>遊戲獎項：
+                        <ul>
+                            <li>1個阿爆|$1購物金</li>
+                            <li>2個阿爆|$11購物金</li>
+                            <li>3個阿爆|$111購物金</li>
+                            <li>4個阿爆|$1111購物金</li>
+                        </ul>
+                    </li>
+                    <li>若遇畫面與購物金呈現不一致，以實際獲得之購物金為主</li>
+                    <li>主辦單位保有變更遊戲之權利，預祝大家中大獎</li>
+                </ul>
+                <br />
+                ※請避免使用IE瀏覽器開啟此遊戲<br />
+                <br />
+                <br />
+                <div style="text-align: center">
+                    <input type="button" value="關閉" onclick="javascript: document.getElementById('ruleBoardBox').style.display = 'none'" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <style>
+        .ruleBoardBox {
+            padding: 0;
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 100%;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 9999;
+        }
+
+            .ruleBoardBox > div {
+                position: absolute;
+                margin: auto;
+                top: -20%;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                min-width: 600px;
+                width: 45%;
+                height: 40%;
+                background-color: white;
+                border-radius: 5px;
+                overflow: auto;
+            }
+
+        @media screen and (min-width: 50px) and (max-width: 700px) and (orientation: portrait) {
+            .ruleBoardBox > div {
+                top: -20%;
+                min-width: 0px;
+                width: 85%;
+                height: 70%;
+            }
+
+            #casino {
+                margin-top: 15px;
+            }
+
+                #casino .content:nth-child(1) {
+                    min-height: 500px;
+                }
+        }
+
+        @media screen and (orientation: landscape) {
+            .ruleBoardBox > div {
+                top: -15%;
+                min-width: 0px;
+                width: 85%;
+                height: 80%;
+            }
+        }
+    </style>
+
+    <div id="loadingDiv" class="objectButton loader" style="display: none;"></div>
+    <style>
+        .objectButton {
+            position: absolute;
+            top: calc(50% - 120px);
+            left: calc(50% - 120px);
+            z-index: 999;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #ffd453;
+            border-bottom: 16px solid #ffd453;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script type="text/ecmascript">
+
+        try {
+            var isStopping = false;
+            var count = document.getElementsByClassName('slotMachine').length;
+            var completeCnt = 0;
+            var btnShuffle = document.querySelector('#casinoShuffle');
+            var btnStop = document.querySelector('#casinoStop');
+            btnStop.style.display = 'none';
+            var handle = document.querySelector(".handle");
+
+            var items = new Array();
+            for (var i = 0; i < count; i++) {
+                items.push(new SlotMachine(document.querySelector('#casino' + i), {
+                    direction: 'down',
+                    delay: 1000,
+                }));
+            }
+
+        } catch (ex) {
+            console.log(ex.message);
+        }
+
+        $(document).ready(function () {
+
+            var ua = window.navigator.userAgent;
+            if (ua.indexOf("MSIE ") > 0 || ua.indexOf("Trident/") > 0) // If Internet Explorer
+            {
+                var casino = document.querySelector('#casino');
+                casino.innerHTML = '請使用Chrome Firfox, safari 或較新的瀏覽器。';
+                casino.style.textAlign = 'center';
+                casino.style.fontSize = 'xx-large';
+            }
+
+            document.getElementById('loadingDiv').style.display = 'block';
+
+        });
+
+        function bodyLoadFunction() {
+            document.getElementById('loadingDiv').style.display = 'none';
+            document.getElementById('casino').style.opacity = 1;
+        }
+
+        var roating_back;
+        function onComplete(obj) {
+            completeCnt += 1;
+            //console.log(completeCnt);
+
+            if (completeCnt == 1) {
+                handle.src = 'img/slotmachine/handle1.png';
+                handle.style.transform = 'rotatex(-82deg)';
+                roating_back = setInterval(function () {
+                    var degree = 90 - 22.5 * completeCnt;
+                    handle.style.transform = 'rotatex(-' + degree + 'deg)';
+                }, 200);
+            }
+
+            if (completeCnt >= 4) {
+                clearInterval(roating_back);
+                isHandleMoving = false;
+                isStopping = false;
+                document.getElementById('slotmachineMessage').style.display = 'block';
+            }
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        var isHandleMoving = false;
+        handle.addEventListener('click', function (e) {
+
+            //獲取滑鼠點擊時第一個點的坐標
+            var xi = e.clientX / 2;
+            var yi = e.clientY / 2;
+
+            //轉動時點擊時 會停止轉動
+            if (isHandleMoving) {
+
+                if (completeCnt >= 4) {
+                    return;
+                }
+
+                if (isStopping)
+                    return;
+
+                isStopping = true;
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/Activity/slotmachineAPI.aspx?type=2',
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    timeout: 15000,
+                    async: true,
+                    beforeSend: function () {
+                        document.getElementById('loadingDiv').style.display = 'block';
+                    },
+                    success: function (data) {
+
+                        var returnData = JSON.parse(data);
+                        if (returnData.isScussess) {
+
+                            //console.log(returnData.items);
+                            document.getElementById('slotmachineMessage').innerHTML = returnData.message + '<br/><br/>';
+                            document.getElementById('slotmachineMessage').innerHTML += '已成功領取！使用期限為<span style="color:red">2020/11/25</span>。' + '<br/>';
+                            document.getElementById('slotmachineMessage').innerHTML += '記得於購物車「優惠折抵」選擇使用折抵！';
+
+
+                            ////////////////////////////////stop rolling///////////////////////////////////////////
+                            var itemIndex = 0;
+                            var stopSpin = setInterval(function () {
+
+                                //change item index (P.S start from 0)
+                                items[itemIndex].changeSettings({ randomize: function () { return returnData.items[itemIndex] - 1; } });
+                                items[itemIndex].stop(onComplete);
+                                itemIndex += 1;
+
+                                if (count == itemIndex)
+                                    clearInterval(stopSpin);
+
+                            }, 800);
+
+                        } else {
+                            alert(returnData.message);
+                            isStopping = false;
+                        }
+
+                    },
+                    error: function (data) {
+                        console.log('ajax call fail!!');
+                    },
+                    complete: function (response) {
+                        document.getElementById('loadingDiv').style.display = 'none';
+                    }
+                });
+
+                return;
+
+            }
+
+            console.log(yi);
+
+            if (yi > 131)  //top is constant number
+                return;
+
+            isHandleMoving = true;
+
+            var roate = 0;
+            var roating = setInterval(function () {
+                roate = roate + 40;
+                handle.style.transform = 'rotatex(-' + roate + 'deg)';
+
+                if (roate > 180) {
+                    clearInterval(roating);
+                    handle.style.transform = 'rotatex(0deg)';
+                    handle.src = 'img/slotmachine/handle2.png';
+
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Activity/slotmachineAPI.aspx?type=1',
+                        cache: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        contentType: false,
+                        timeout: 15000,
+                        async: true,
+                        beforeSend: function () {
+                            document.getElementById('loadingDiv').style.display = 'block';
+                        },
+                        success: function (data) {
+
+                            document.getElementById('slotmachineMessage').innerHTML = '';
+                            document.getElementById('slotmachineMessage').style.display = 'none';
+
+                            var returnData = JSON.parse(data);
+                            if (returnData.isScussess) {
+
+                                //reset all items incomplete
+                                completeCnt = 0;
+
+                                var itemIndex = 0;
+                                var startSpin = setInterval(function () {
+                                    //items[itemIndex]._getDelayFromSpins(2);
+                                    //items[itemIndex]._setBounds();
+                                    items[itemIndex].shuffle(9999);
+                                    itemIndex += 1;
+
+                                    if (count == itemIndex) {
+                                        clearInterval(startSpin);
+
+                                        var countDown = document.getElementById('countDownDiv');
+                                        $(countDown).find('span').html(6);
+                                        countDown.style.display = '';
+
+                                        var timer = setInterval(function () {
+                                            var number = parseInt($(countDown).find('span').html());
+                                            $(countDown).find('span').html((number - 1));
+                                        }, 1000);
+
+                                        setTimeout(function () {
+                                            countDown.style.display = 'none';
+                                            clearInterval(timer);
+                                            $(handle).trigger('click');
+                                        }, 6000);
+
+                                    }
+
+                                }, 300);
+
+                            } else {
+                                alert(returnData.message);
+                                isHandleMoving = false;
+                                handle.src = 'img/slotmachine/handle1.png';
+                            }
+
+                        },
+                        error: function (data) {
+                            console.log('ajax call fail!!');
+                            isHandleMoving = false;
+                            handle.src = 'img/slotmachine/handle1.png';
+                        },
+                        complete: function (response) {
+                            document.getElementById('loadingDiv').style.display = 'none';
+                        }
+                    });
+                }
+
+            }, 100);
+
+
+        });
+
+        function BackToHome() {
+            window.location.href = '/Default.aspx';
+        }
+
+    </script>
+</body>
+</html>
